@@ -155,7 +155,7 @@ class CsvProcessor:
             writer = csv.writer(word_counter, delimiter='-')
             words = list(set(reader.lower().split()))
             for word in words:
-                writer.writerow([f'{word}', f'{reader.count(word)}'])
+                writer.writerow([f'{word}', f'{reader.lower().count(word)}'])
         return
     
     def detailed_counter(self):
