@@ -128,12 +128,18 @@ def specify_choice(user_selection):
             user_option = input('Please specify your option: ')
             match user_option:
                 case '1':
-                    json_validator.json_schema_validator()
-                    json_validator.remove_json()
+                    if isinstance(json_validator.json_schema_validator(), str):
+                        print('File remains in file system')
+                    else:
+                        json_validator.json_schema_validator()
+                        json_validator.remove_json()
                 case '2':
                     path_to_file = input('Please specify path to file: ')
-                    json_validator.json_schema_validator(path_to_file)
-                    json_validator.remove_json()
+                    if isinstance(json_validator.json_schema_validator(path_to_file), str):
+                        print('File remains in file system')
+                    else:
+                        json_validator.json_schema_validator(path_to_file)
+                        json_validator.remove_json(path_to_file)
         case '6':
             xml_validator = classes.XmlProcessor()
             print('Please select options: \n'
@@ -142,12 +148,18 @@ def specify_choice(user_selection):
             user_option = input('Please specify your option: ')
             match user_option:
                 case '1':
-                    xml_validator.xml_schema_validator()
-                    xml_validator.remove_xml()
+                    if isinstance(xml_validator.xml_schema_validator(), str):
+                        print('File remains in file system')
+                    else:
+                        xml_validator.xml_schema_validator()
+                        xml_validator.remove_xml()
                 case '2':
                     path_to_file = input('Please specify path to file: ')
-                    xml_validator.xml_schema_validator(path_to_file)
-                    xml_validator.remove_xml()
+                    if isinstance(xml_validator.xml_schema_validator(path_to_file), str):
+                        print('File remains in file system')
+                    else:
+                        xml_validator.xml_schema_validator(path_to_file)
+                        xml_validator.remove_xml(path_to_file)
         case _:
             print('Wrong parameter! Please select from 1 to 5')
 
