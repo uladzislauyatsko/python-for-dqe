@@ -30,7 +30,8 @@ class News:
     def city(self, value):
         self._city = value
     
-    def post_new_evidence(self, text_of_news: str, city: str, date_of_post) -> None:
+    @staticmethod
+    def post_new_evidence(text_of_news: str, city: str, date_of_post) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
             file.write('News: \n')
@@ -58,13 +59,15 @@ class Advertising:
     def ad_text(self, value):
         self._ad_text = value
     
+    @staticmethod
     def calculate_days_to_expire(self):
         if (self._expiration_date - date.today()).days <= 0:
             return 'Expired'
         else:
             return (self._expiration_date - date.today()).days
     
-    def post_your_ad(self, ad_text: str, expiration_date) -> None:
+    @staticmethod
+    def post_your_ad(ad_text: str, expiration_date) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
             file.write('Ad: \n')
@@ -97,7 +100,8 @@ class TwitterPost(News, Advertising):
     def user_name(self, value):
         self._user_name = value
     
-    def post_your_ideas(self, user_name: str, post_text: str, date_of_post) -> None:
+    @staticmethod
+    def post_your_ideas(user_name: str, post_text: str, date_of_post) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
             file.write(f'Posted by {user_name}: \n')
@@ -106,20 +110,20 @@ class TwitterPost(News, Advertising):
             file.write(('-' * 10) + '\n')
         return
     
-    def post_new_evidence(self, text_of_news: str, city: str, date_of_post) -> None:
+    @staticmethod
+    def post_new_evidence(text_of_news: str, city: str, date_of_post) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
-            file.write(f'Posted by {self._user_name}. Please specify your_news: \n')
             file.write(text_of_news + '\n')
             file.write(f'Issued city: {city} \t Date_of_post: {date_of_post} \n')
             file.write(('-' * 10) + '\n')
         return
     
-    def post_your_ad(self, ad_text: str, expiration_date) -> None:
+    @staticmethod
+    def post_your_ad(ad_text: str, expiration_date) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
             file.write('Ad: ')
-            file.write(f'Customer is {self._customer_name}: ')
             file.write(ad_text + '\n')
             file.write(f'Days_to_expire: {expiration_date} \n')
             file.write(('-' * 10) + '\n')
@@ -180,29 +184,27 @@ class JsonProcessor:
         import json
         json_to_review = json.load(open(path))
         if sorted(json_to_review.keys()) == sorted(['type', 'text_of_news', 'city', 'date_of_post']):
-            news = News()
-            news.post_new_evidence(json_to_review['text_of_news'],
+            News.post_new_evidence(json_to_review['text_of_news'],
                                    json_to_review['city'], json_to_review['date_of_post'])
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         elif sorted(json_to_review.keys()) == sorted(['type', 'ad_text', 'days_to_expire']):
-            advertise = Advertising()
-            advertise.post_your_ad(json_to_review['ad_text'], json_to_review['days_to_expire'])
+            Advertising.post_your_ad(json_to_review['ad_text'], json_to_review['days_to_expire'])
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         elif sorted(json_to_review.keys()) == sorted(['type', 'user_name', 'post_text', 'date_of_post']):
-            twitter = TwitterPost()
-            twitter.post_your_ideas(json_to_review['user_name'], json_to_review['post_text'],
+            TwitterPost.post_your_ideas(json_to_review['user_name'], json_to_review['post_text'],
                                     json_to_review['date_of_post'])
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         else:
-            print('Incorrect file structure!')
-        
-    def remove_json(self, path=f'{sys.path[0]}\\file_to_input.json'):
+            return 'Incorrect file structure!'
+    
+    @staticmethod
+    def remove_json(path=f'{sys.path[0]}\\file_to_input.json'):
         os.remove(path)
         return
         
