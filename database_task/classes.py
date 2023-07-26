@@ -30,7 +30,8 @@ class News:
     def city(self, value):
         self._city = value
     
-    def post_new_evidence(self, text_of_news: str, city: str, date_of_post) -> None:
+    @staticmethod
+    def post_new_evidence(text_of_news: str, city: str, date_of_post) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
             file.write('News: \n')
@@ -64,7 +65,8 @@ class Advertising:
         else:
             return (self._expiration_date - date.today()).days
     
-    def post_your_ad(self, ad_text: str, expiration_date) -> None:
+    @staticmethod
+    def post_your_ad(ad_text: str, expiration_date) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
             file.write('Ad: \n')
@@ -97,7 +99,8 @@ class TwitterPost(News, Advertising):
     def user_name(self, value):
         self._user_name = value
     
-    def post_your_ideas(self, user_name: str, post_text: str, date_of_post) -> None:
+    @staticmethod
+    def post_your_ideas(user_name: str, post_text: str, date_of_post) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
             file.write(f'Posted by {user_name}: \n')
@@ -106,20 +109,20 @@ class TwitterPost(News, Advertising):
             file.write(('-' * 10) + '\n')
         return
     
-    def post_new_evidence(self, text_of_news: str, city: str, date_of_post) -> None:
+    @staticmethod
+    def post_new_evidence(text_of_news: str, city: str, date_of_post) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
-            file.write(f'Posted by {self._user_name}. Please specify your_news: \n')
             file.write(text_of_news + '\n')
             file.write(f'Issued city: {city} \t Date_of_post: {date_of_post} \n')
             file.write(('-' * 10) + '\n')
         return
     
-    def post_your_ad(self, ad_text: str, expiration_date) -> None:
+    @staticmethod
+    def post_your_ad(ad_text: str, expiration_date) -> None:
         with open('text_with_output', 'a') as file:
             file.write(('-' * 10) + '\n')
             file.write('Ad: ')
-            file.write(f'Customer is {self._customer_name}: ')
             file.write(ad_text + '\n')
             file.write(f'Days_to_expire: {expiration_date} \n')
             file.write(('-' * 10) + '\n')
@@ -180,29 +183,27 @@ class JsonProcessor:
         import json
         json_to_review = json.load(open(path))
         if sorted(json_to_review.keys()) == sorted(['type', 'text_of_news', 'city', 'date_of_post']):
-            news = News()
-            news.post_new_evidence(json_to_review['text_of_news'],
+            News.post_new_evidence(json_to_review['text_of_news'],
                                    json_to_review['city'], json_to_review['date_of_post'])
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         elif sorted(json_to_review.keys()) == sorted(['type', 'ad_text', 'days_to_expire']):
-            advertise = Advertising()
-            advertise.post_your_ad(json_to_review['ad_text'], json_to_review['days_to_expire'])
+            Advertising.post_your_ad(json_to_review['ad_text'], json_to_review['days_to_expire'])
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         elif sorted(json_to_review.keys()) == sorted(['type', 'user_name', 'post_text', 'date_of_post']):
-            twitter = TwitterPost()
-            twitter.post_your_ideas(json_to_review['user_name'], json_to_review['post_text'],
-                                    json_to_review['date_of_post'])
+            TwitterPost.post_your_ideas(json_to_review['user_name'], json_to_review['post_text'],
+                                        json_to_review['date_of_post'])
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         else:
-            print('Incorrect file structure!')
+            return 'Incorrect file structure!'
     
-    def remove_json(self, path=f'{sys.path[0]}\\file_to_input.json'):
+    @staticmethod
+    def remove_json(path=f'{sys.path[0]}\\file_to_input.json'):
         os.remove(path)
         return
 
@@ -217,34 +218,32 @@ class XmlProcessor:
         for element in child_elements:
             list_of_tags.append(element.tag)
         if sorted(list_of_tags) == sorted(['type', 'text_of_news', 'city', 'date_of_post']):
-            news = News()
-            news.post_new_evidence(root.find('text_of_news').text,
+            News.post_new_evidence(root.find('text_of_news').text,
                                    root.find('city').text, root.find('date_of_post').text)
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         elif sorted(list_of_tags) == sorted(['type', 'ad_text', 'days_to_expire']):
-            advertise = Advertising()
-            advertise.post_your_ad(root.find('ad_text').text, root.find('days_to_expire').text)
+            Advertising.post_your_ad(root.find('ad_text').text, root.find('days_to_expire').text)
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         elif sorted(list_of_tags) == sorted(['type', 'user_name', 'post_text', 'date_of_post']):
-            twitter = TwitterPost()
-            twitter.post_your_ideas(root.find('user_name').text, root.find('post_text').text,
-                                    root.find('date_of_post').text)
+            TwitterPost.post_your_ideas(root.find('user_name').text, root.find('post_text').text,
+                                        root.find('date_of_post').text)
             csv_processor = CsvProcessor()
             csv_processor.word_counter()
             csv_processor.detailed_counter()
         else:
             print('Incorrect file structure!')
     
-    def remove_xml(self, path=f'{sys.path[0]}\\file_to_input.xml'):
+    @staticmethod
+    def remove_xml(path=f'{sys.path[0]}\\file_to_input.xml'):
         os.remove(path)
         return
 
 
-class DbProcessor:
+class DbProcessor(JsonProcessor, XmlProcessor):
     @staticmethod
     def get_records_from_news():
         import pyodbc
@@ -295,7 +294,7 @@ class DbProcessor:
                     connector.commit()
     
     @staticmethod
-    def insert_records_into_ads(ad_text, expiration_date):
+    def insert_records_into_twits_ads(ad_text, expiration_date):
         import pyodbc
         with pyodbc.connect('DRIVER={SQLite3 ODBC Driver};'
                             'Direct=True;'
@@ -303,26 +302,102 @@ class DbProcessor:
                             'String Types=Unicode') as connector:
             with connector.cursor() as cursor:
                 user_input = (ad_text, expiration_date)
-                get_records = DbProcessor.get_records_from_ads()
+                get_records = DbProcessor.get_records_from_twits()
                 if user_input in get_records:
                     return 'You are trying to insert duplicate!'
                 else:
-                    cursor.execute(f'INSERT INTO ADS VALUES ("{ad_text}", "{expiration_date}")')
+                    cursor.execute(f'INSERT INTO TWITS (post_text, date_of_post) VALUES ("{ad_text}", "{expiration_date}")')
                     connector.commit()
                     
     @staticmethod
-    def insert_records_into_twits(user_name, post_text, date_of_post):
+    def insert_records_into_twits(text_of_news, city, date_of_post):
         import pyodbc
         with pyodbc.connect('DRIVER={SQLite3 ODBC Driver};'
                             'Direct=True;'
                             'Database=test.db;'
                             'String Types=Unicode') as connector:
             with connector.cursor() as cursor:
-                user_input = (user_name, post_text, date_of_post)
+                user_input = (text_of_news, city, date_of_post)
+                get_records = DbProcessor.get_records_from_twits()
+                if user_input in get_records:
+                    return 'You are trying to insert duplicate!'
+                else:
+                    cursor.execute(f'INSERT INTO TWITS VALUES ("{text_of_news}", "{city}", "{date_of_post}")')
+                    connector.commit()
+    
+    @staticmethod
+    def insert_records_into_ads(post_text, date_of_post):
+        import pyodbc
+        with pyodbc.connect('DRIVER={SQLite3 ODBC Driver};'
+                            'Direct=True;'
+                            'Database=test.db;'
+                            'String Types=Unicode') as connector:
+            with connector.cursor() as cursor:
+                user_input = (post_text, date_of_post)
                 get_records = DbProcessor.get_records_from_ads()
                 if user_input in get_records:
                     return 'You are trying to insert duplicate!'
                 else:
-                    cursor.execute(f'INSERT INTO TWITS VALUES ("{user_name}", "{post_text}", "{date_of_post}")')
+                    cursor.execute(f'INSERT INTO ADS VALUES ("{post_text}", "{date_of_post}")')
                     connector.commit()
-                    
+    
+    def json_schema_validator(self, path=f'{sys.path[0]}\\file_to_input.json'):
+        import json
+        json_to_review = json.load(open(path))
+        if sorted(json_to_review.keys()) == sorted(['type', 'text_of_news', 'city', 'date_of_post']):
+            News.post_new_evidence(json_to_review['text_of_news'],
+                                   json_to_review['city'], json_to_review['date_of_post'])
+            DbProcessor.insert_record_into_news(json_to_review['text_of_news'],
+                                   json_to_review['city'], json_to_review['date_of_post'])
+            csv_processor = CsvProcessor()
+            csv_processor.word_counter()
+            csv_processor.detailed_counter()
+        elif sorted(json_to_review.keys()) == sorted(['type', 'ad_text', 'days_to_expire']):
+            Advertising.post_your_ad(json_to_review['ad_text'], json_to_review['days_to_expire'])
+            DbProcessor.insert_records_into_ads(json_to_review['ad_text'], json_to_review['days_to_expire'])
+            csv_processor = CsvProcessor()
+            csv_processor.word_counter()
+            csv_processor.detailed_counter()
+        elif sorted(json_to_review.keys()) == sorted(['type', 'user_name', 'post_text', 'date_of_post']):
+            TwitterPost.post_your_ideas(json_to_review['user_name'], json_to_review['post_text'],
+                                        json_to_review['date_of_post'])
+            DbProcessor.insert_records_into_twits(json_to_review['user_name'], json_to_review['post_text'],
+                                        json_to_review['date_of_post'])
+            csv_processor = CsvProcessor()
+            csv_processor.word_counter()
+            csv_processor.detailed_counter()
+        else:
+            return 'Incorrect file structure!'
+  
+    def xml_schema_validator(self, path=f'{sys.path[0]}\\file_to_input.xml'):
+        import xml.etree.ElementTree as ET
+        xml_file = ET.parse(path)
+        root = xml_file.getroot()
+        child_elements = list(root)
+        list_of_tags = []
+        for element in child_elements:
+            list_of_tags.append(element.tag)
+        if sorted(list_of_tags) == sorted(['type', 'text_of_news', 'city', 'date_of_post']):
+            News.post_new_evidence(root.find('text_of_news').text,
+                                   root.find('city').text, root.find('date_of_post').text)
+            DbProcessor.insert_record_into_news(root.find('text_of_news').text,
+                                   root.find('city').text, root.find('date_of_post').text)
+            csv_processor = CsvProcessor()
+            csv_processor.word_counter()
+            csv_processor.detailed_counter()
+        elif sorted(list_of_tags) == sorted(['type', 'ad_text', 'days_to_expire']):
+            Advertising.post_your_ad(root.find('ad_text').text, root.find('days_to_expire').text)
+            DbProcessor.insert_records_into_ads(root.find('ad_text').text, root.find('days_to_expire').text)
+            csv_processor = CsvProcessor()
+            csv_processor.word_counter()
+            csv_processor.detailed_counter()
+        elif sorted(list_of_tags) == sorted(['type', 'user_name', 'post_text', 'date_of_post']):
+            TwitterPost.post_your_ideas(root.find('user_name').text, root.find('post_text').text,
+                                        root.find('date_of_post').text)
+            DbProcessor.insert_records_into_twits(root.find('user_name').text, root.find('post_text').text,
+                                        root.find('date_of_post').text)
+            csv_processor = CsvProcessor()
+            csv_processor.word_counter()
+            csv_processor.detailed_counter()
+        else:
+            print('Incorrect file structure!')

@@ -12,6 +12,7 @@ def specify_choice(user_selection):
                 news.post_new_evidence(news.text_of_news, news.city, news.date_of_post)
                 csv_processor.word_counter()
                 csv_processor.detailed_counter()
+                classes.DbProcessor.insert_record_into_news(news.text_of_news, news.city, news.date_of_post)
                 print('Your news are posted to text_with_output file. Good Job!')
             else:
                 news.text_of_news = input('Please update the text: ')
@@ -19,6 +20,7 @@ def specify_choice(user_selection):
                 news.post_new_evidence(news.text_of_news, news.city, news.date_of_post)
                 csv_processor.word_counter()
                 csv_processor.detailed_counter()
+                classes.DbProcessor.insert_record_into_news(news.text_of_news, news.city, news.date_of_post)
         case '2':
             advertising = classes.Advertising()
             csv_processor = classes.CsvProcessor()
@@ -29,6 +31,7 @@ def specify_choice(user_selection):
                 advertising.post_your_ad(advertising.ad_text, days_to_expire)
                 csv_processor.word_counter()
                 csv_processor.detailed_counter()
+                classes.DbProcessor.insert_records_into_ads(advertising.ad_text, days_to_expire)
                 print('Your ad is posted to text_with_output file. Good Job!')
             else:
                 advertising.ad_text = input('Please update the text: ')
@@ -36,6 +39,7 @@ def specify_choice(user_selection):
                 advertising.post_your_ad(advertising.ad_text, days_to_expire)
                 csv_processor.word_counter()
                 csv_processor.detailed_counter()
+                classes.DbProcessor.insert_records_into_ads(advertising.ad_text, days_to_expire)
         case '3':
             twitter = classes.TwitterPost()
             csv_processor = classes.CsvProcessor()
@@ -52,6 +56,8 @@ def specify_choice(user_selection):
                         twitter.post_new_evidence(twitter.text_of_news, twitter.city, twitter.date_of_post)
                         csv_processor.word_counter()
                         csv_processor.detailed_counter()
+                        classes.DbProcessor.insert_records_into_twits(twitter.text_of_news, twitter.city,
+                                                                      twitter.date_of_post)
                         print('Your news are posted to text_with_output file. Good Job!')
                     else:
                         twitter.text_of_news = input('Please update the text: ')
@@ -59,6 +65,8 @@ def specify_choice(user_selection):
                         twitter.post_new_evidence(twitter.text_of_news, twitter.city, twitter.date_of_post)
                         csv_processor.word_counter()
                         csv_processor.detailed_counter()
+                        classes.DbProcessor.insert_records_into_twits(twitter.text_of_news, twitter.city,
+                                                                      twitter.date_of_post)
                         print('Your news are posted to text_with_output file. Good Job!')
                 case '2':
                     print('You have 2 options. Post as it is (1) or update before sending (2)')
@@ -68,6 +76,7 @@ def specify_choice(user_selection):
                         twitter.post_your_ad(twitter.ad_text, days_to_expire)
                         csv_processor.word_counter()
                         csv_processor.detailed_counter()
+                        classes.DbProcessor.insert_records_into_twits_ads(twitter.ad_text, days_to_expire)
                         print('Your ad is posted to text_with_output file. Good Job!')
                     else:
                         twitter.ad_text = input('Please update the text: ')
@@ -75,6 +84,7 @@ def specify_choice(user_selection):
                         twitter.post_your_ad(twitter.ad_text, days_to_expire)
                         csv_processor.word_counter()
                         csv_processor.detailed_counter()
+                        classes.DbProcessor.insert_records_into_twits_ads(twitter.ad_text, days_to_expire)
                         print('Your ad is posted to text_with_output file. Good Job!')
                 case '3':
                     print('You have 2 options. Post as it is (1) or update before sending (2)')
@@ -83,6 +93,8 @@ def specify_choice(user_selection):
                         twitter.post_your_ideas(twitter.user_name, twitter.post_text, twitter.date_of_post)
                         csv_processor.word_counter()
                         csv_processor.detailed_counter()
+                        classes.DbProcessor.insert_records_into_twits(twitter.user_name, twitter.post_text,
+                                                                      twitter.date_of_post)
                         print('Your ideas are posted to text_with_output file. Good Job!')
                     else:
                         twitter.ad_text = input('Please update the text: ')
@@ -90,6 +102,8 @@ def specify_choice(user_selection):
                         twitter.post_your_ideas(twitter.user_name, twitter.post_text, twitter.date_of_post)
                         csv_processor.word_counter()
                         csv_processor.detailed_counter()
+                        classes.DbProcessor.insert_records_into_twits(twitter.user_name, twitter.post_text,
+                                                                      twitter.date_of_post)
                         print('Your ideas are posted to text_with_output file. Good Job!')
         case '4':
             reader = classes.FileReader()
@@ -121,55 +135,41 @@ def specify_choice(user_selection):
                     else:
                         print('Incorrect text format!')
         case '5':
-            json_validator = classes.JsonProcessor()
+            db_validator = classes.DbProcessor()
             print('Please select options: \n'
                   '1. Take JSON from the current folder\n'
                   '2. Specify path to JSON file.\n')
             user_option = input('Please specify your option: ')
             match user_option:
                 case '1':
-                    json_validator.json_schema_validator()
-                    json_validator.remove_json()
+                    if isinstance(db_validator.json_schema_validator(), str):
+                        print('File remains in file system')
+                    else:
+                        db_validator.remove_json()
                 case '2':
                     path_to_file = input('Please specify path to file: ')
-                    json_validator.json_schema_validator(path_to_file)
-                    json_validator.remove_json()
+                    if isinstance(db_validator.json_schema_validator(path_to_file), str):
+                        print('File remains in file system')
+                    else:
+                        db_validator.remove_json(path_to_file)
         case '6':
-            xml_validator = classes.XmlProcessor()
+            db_validator = classes.DbProcessor()
             print('Please select options: \n'
                   '1. Take XML from the current folder\n'
                   '2. Specify path to XML file.\n')
             user_option = input('Please specify your option: ')
             match user_option:
                 case '1':
-                    xml_validator.xml_schema_validator()
-                    xml_validator.remove_xml()
+                    if isinstance(db_validator.xml_schema_validator(), str):
+                        print('File remains in file system')
+                    else:
+                        db_validator.remove_xml()
                 case '2':
                     path_to_file = input('Please specify path to file: ')
-                    xml_validator.xml_schema_validator(path_to_file)
-                    xml_validator.remove_xml()
-        case '7':
-            print('Please select options to insert to database: \n'
-                  '1. Record news to Database\n'
-                  '2. Record ads to Database\n'
-                  '3. Record twits to your database.')
-            user_option = input('Please specify your option: ')
-            match user_option:
-                case '1':
-                    news = input('Please specify your news: ')
-                    city = input('Please specify city of news: ')
-                    date_of_post = input('Please specify date of post: ')
-                    classes.DbProcessor.insert_record_into_news(news, city, date_of_post)
-                case '2':
-                    ads = input('Please specify your ads: ')
-                    expiration_date = input('Please specify expiration date: ')
-                    classes.DbProcessor.insert_records_into_ads(ads, expiration_date)
-                case '3':
-                    user_name = input('Please specify your username: ')
-                    post_text = input('Please share your ideas: ')
-                    date_of_post = input('Please specify date of post: ')
-                    classes.DbProcessor.insert_records_into_twits(user_name, post_text, date_of_post)
-                
+                    if isinstance(db_validator.xml_schema_validator(path_to_file), str):
+                        print('File remains in file system')
+                    else:
+                        db_validator.remove_xml(path_to_file)
         case _:
             print('Wrong parameter! Please select from 1 to 5')
 
@@ -183,10 +183,9 @@ while True:
           '4. Input from file\n'
           '5. JSON input\n'
           '6. XML input\n'
-          '7. Insert into database\n'
-          '8. Exit.')
-    user_choice = input('Please specify your option from 1 to 8: ')
-    if user_choice == '8':
+          '7. Exit.')
+    user_choice = input('Please specify your option from 1 to 7: ')
+    if user_choice == '7':
         print('Thank you for your time!')
         break
     specify_choice(user_choice)
