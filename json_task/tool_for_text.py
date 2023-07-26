@@ -133,14 +133,12 @@ def specify_choice(user_selection):
                     if isinstance(json_validator.json_schema_validator(), str):
                         print('File remains in file system')
                     else:
-                        json_validator.json_schema_validator()
                         json_validator.remove_json()
                 case '2':
                     path_to_file = input('Please specify path to file: ')
                     if isinstance(json_validator.json_schema_validator(path_to_file), str):
                         print('File remains in file system')
                     else:
-                        json_validator.json_schema_validator(path_to_file)
                         json_validator.remove_json(path_to_file)
         case _:
             print('Wrong parameter! Please select from 1 to 5')
