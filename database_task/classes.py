@@ -404,5 +404,3 @@ class DbProcessor(JsonProcessor, XmlProcessor):
             csv_processor.detailed_counter()
         else:
             print('Incorrect file structure!')
-
-print(DbProcessor.get_records_from_news())
