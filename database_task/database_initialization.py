@@ -9,6 +9,7 @@ cursor = connection.cursor()
 cursor.execute('CREATE TABLE news (news text, city text, date_of_post text)')
 cursor.execute('CREATE TABLE ads (ad_text text, expiration_date text)')
 cursor.execute('CREATE TABLE twits (user_name text, post_text text, date_of_post text)')
+cursor.execute('CREATE TABLE twits_ads (ad_text text, expiration_date text)')
 
 connection.commit()
 

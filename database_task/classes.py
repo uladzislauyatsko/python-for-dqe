@@ -285,9 +285,10 @@ class DbProcessor(JsonProcessor, XmlProcessor):
                             'Database=test.db;'
                             'String Types=Unicode') as connector:
             with connector.cursor() as cursor:
-                user_input = (text_of_news, city, date_of_post)
-                get_records = DbProcessor.get_records_from_news()
-                if user_input in get_records:
+                cursor.execute(f'SELECT * FROM NEWS WHERE news = "{text_of_news}" AND city = "{city}"'
+                               f' AND date_of_post = "{date_of_post}"')
+                existing_records = cursor.fetchall()
+                if existing_records:
                     return 'You are trying to insert duplicate!'
                 else:
                     cursor.execute(f'INSERT INTO NEWS VALUES ("{text_of_news}", "{city}", "{date_of_post}")')
@@ -301,12 +302,13 @@ class DbProcessor(JsonProcessor, XmlProcessor):
                             'Database=test.db;'
                             'String Types=Unicode') as connector:
             with connector.cursor() as cursor:
-                user_input = (ad_text, expiration_date)
-                get_records = DbProcessor.get_records_from_twits()
-                if user_input in get_records:
+                cursor.execute(
+                    f'SELECT * FROM TWITS_ADS WHERE ad_text = "{ad_text}" AND expiration_date = "{expiration_date}"')
+                existing_records = cursor.fetchall()
+                if existing_records:
                     return 'You are trying to insert duplicate!'
                 else:
-                    cursor.execute(f'INSERT INTO TWITS (post_text, date_of_post) VALUES ("{ad_text}", "{expiration_date}")')
+                    cursor.execute(f'INSERT INTO TWITS_ADS VALUES ("{ad_text}", "{expiration_date}")')
                     connector.commit()
                     
     @staticmethod
@@ -317,9 +319,10 @@ class DbProcessor(JsonProcessor, XmlProcessor):
                             'Database=test.db;'
                             'String Types=Unicode') as connector:
             with connector.cursor() as cursor:
-                user_input = (text_of_news, city, date_of_post)
-                get_records = DbProcessor.get_records_from_twits()
-                if user_input in get_records:
+                cursor.execute(f'SELECT * FROM TWITS WHERE user_name = "{text_of_news}" AND post_text = "{city}"'
+                               f' AND date_of_post = "{date_of_post}"')
+                existing_records = cursor.fetchall()
+                if existing_records:
                     return 'You are trying to insert duplicate!'
                 else:
                     cursor.execute(f'INSERT INTO TWITS VALUES ("{text_of_news}", "{city}", "{date_of_post}")')
@@ -333,9 +336,9 @@ class DbProcessor(JsonProcessor, XmlProcessor):
                             'Database=test.db;'
                             'String Types=Unicode') as connector:
             with connector.cursor() as cursor:
-                user_input = (post_text, date_of_post)
-                get_records = DbProcessor.get_records_from_ads()
-                if user_input in get_records:
+                cursor.execute(f'SELECT * FROM ADS WHERE ad_text = "{post_text}" AND expiration_date = "{date_of_post}"')
+                existing_records = cursor.fetchall()
+                if existing_records:
                     return 'You are trying to insert duplicate!'
                 else:
                     cursor.execute(f'INSERT INTO ADS VALUES ("{post_text}", "{date_of_post}")')
@@ -401,3 +404,5 @@ class DbProcessor(JsonProcessor, XmlProcessor):
             csv_processor.detailed_counter()
         else:
             print('Incorrect file structure!')
+
+print(DbProcessor.get_records_from_news())
